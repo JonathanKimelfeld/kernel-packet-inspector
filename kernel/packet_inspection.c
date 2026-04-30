@@ -133,6 +133,14 @@ static ssize_t device_read(struct file *file, char __user *buffer, size_t len, l
     return ret;
 }
 
+// Device write
+
+static ssize_t device_write(struct file *file, const char __user *buffer, size_t len, loff_t *offset)
+{
+    printk(KERN_INFO "packet_inspection: Write operation not supported (use ioctl)\n");
+    return -EINVAL;
+}
+
 // Device input output control (ioctl)
 
 static long device_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
@@ -251,6 +259,7 @@ static struct file_operations fops = {
     .open = device_open,
     .release = device_release,
     .read = device_read,
+    .write = device_write,
     .unlocked_ioctl = device_ioctl,
 
 };

@@ -95,13 +95,15 @@ chmod +x demo.sh
    - Prevents the kernel from crashing if user passes a bad pointer
    - critical necessety for saftey & fault tolerance
 
-### Assumptions
+### Assumptions and Limitations
+
+# Assumptions:
 
 - Rules checked in order based on first match found
 - Any process with device access can modify rules because there's no auth
 - Small amount of rules, which is typical in firewall usage, that's why O(n) lookup is still acceptable here
 
-###Limitations:
+# Limitations:
 
 - No rule priority beyond insertion order
 - Rule matching done in user space

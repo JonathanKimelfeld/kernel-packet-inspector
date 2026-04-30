@@ -1,0 +1,12 @@
+*.o
+*.ko
+*.mod
+*.mod.c
+*.cmd
+Module.symvers
+modules.order
+.tmp_versions/
+test/test_add_rules
+test/test_validation
+test/test_new_validation
+.*.swp
