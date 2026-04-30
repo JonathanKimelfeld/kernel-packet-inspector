@@ -60,6 +60,13 @@ chmod +x demo.sh
 
 # Key design choices
 
+** I chose Simplicity (over extra features):**
+I chose to implement a solid, working basic packet filter (rather than incomplete advanced features).
+Rule implementation supports exact IP matching, protocol, ports, and actions. 
+If I had more time, I would add: 
+- Rate limiting with token buckets
+- Per-rule statistics
+
 1. **Linked list for storing the filtering rules:**
    - Choosing fixed array would require choosing a fixed size upfront
    - Dynamic memory: rule gets allocated only when it's added, no wasted space as using static
@@ -105,6 +112,7 @@ chmod +x demo.sh
 
 # Limitations:
 
+- 
 - No rule priority beyond insertion order
 - Rule matching done in user space
 - No per-rule statistics- only global counts
@@ -145,3 +153,47 @@ chmod +x demo.sh
 - Synchronization - the spinlock vs mutex trade-off
 - User-kernel data transfer (copy_from_user/copy_to_user)
 - Kernel module lifecycle (init/exit)
+
+
+## Part 3: Control Util Bonus
+
+A command-line tool that provides a user-friendly interface to the kernel moule
+
+### Build Instructions
+
+```bash
+cd ctl/
+make
+```
+
+### Usage
+
+**Add a rule:**
+```bash
+sudo ./packet_ctl add <src_ip> <dst_ip> <protocol> <src_port> <dst_port> <action>
+# (Examples:)
+sudo ./packet_ctl add 0.0.0.0 10.0.0.1 6 0 80 1         # Allow HTTP to 10.0.0.1
+```
+
+**Delete a rule:**
+```bash
+sudo ./packet_ctl del <rule_id>
+```
+
+**List all rules:**
+```bash
+sudo ./packet_ctl list
+```
+
+**View statistics:**
+```bash
+sudo ./packet_ctl stats
+```
+
+### Design
+
+it's just a simple wrapper for the kernel module's ioctl interface:
+- Validates user input (IP addr)
+- Provides clear error messages
+- Standard exit codes (success or error)
+- Makes sys usage easier, no need in writing c programs or compiling all existing code routines
