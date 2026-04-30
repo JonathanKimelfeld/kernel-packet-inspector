@@ -1,1 +1,0 @@
-savedcmd_packet_inspection.ko := ld -r -EL  -maarch64elf -z noexecstack --no-warn-rwx-segments --build-id=sha1  -T /usr/src/linux-headers-7.0.0-14-generic/scripts/module.lds -o packet_inspection.ko packet_inspection.o packet_inspection.mod.o .module-common.o
