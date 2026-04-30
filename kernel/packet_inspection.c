@@ -189,10 +189,9 @@ static long device_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
             
             spin_lock(&rules_lock);
             list_add_tail(&entry->list, &rules_list);
-            spin_unlock(&rules_lock);
-
-	    atomic_inc(&rule_count);
-
+            atomic_inc(&rule_count);
+	    spin_unlock(&rules_lock);
+	    
             printk(KERN_INFO "packet_inspection: Added rule ID %u\n", user_rule.id);
             
             if (copy_to_user((void __user *)arg, &user_rule, sizeof(user_rule))) {
@@ -211,9 +210,10 @@ static long device_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
             list_for_each_entry_safe(entry, tmp, &rules_list, list) {
                 if (entry->rule.id == rule_id) {
                     list_del(&entry->list);
-                    spin_unlock(&rules_lock);
+                    atomic_dec(&rule_count);
+		    spin_unlock(&rules_lock);
                     kfree(entry);
-		    atomic_dec(&rule_count);
+		    
 
                     printk(KERN_INFO "packet_inspection: Deleted rule ID %u\n", rule_id);
 
